@@ -2,7 +2,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { Orbitron } from "next/font/google";
 import { Open_Sans } from "next/font/google";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import AnimatedText from "./AnimatedText";
 const BlueStripes = "/ui-01-blue.svg";
 const WhiteLines = "/ui-02.svg";
@@ -20,7 +20,7 @@ const About = () => {
   const mainRef = useRef<HTMLElement | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLImageElement>) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLImageElement>) => {
     const { clientX, clientY } = e;
     const element = imgRef.current;
 
@@ -43,9 +43,9 @@ const About = () => {
       transformPerspective: 500,
       ease: "power1.inOut",
     });
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     const element = imgRef.current;
 
     if (element) {
@@ -56,23 +56,29 @@ const About = () => {
         ease: "power1.inOut",
       });
     }
-  };
+  }, []);
 
   useEffect(() => {
-    gsap.fromTo(
-      mainRef.current,
-      { rotate: "10deg", transformOrigin: "left center" },
-      {
-        rotate: "0deg",
-        ease: "power1.inOut",
-        scrollTrigger: {
-          trigger: mainRef.current,
-          start: "top bottom",
-          end: "top center",
-          scrub: true,
-        },
-      }
-    );
+    if (!mainRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        mainRef.current,
+        { rotate: "10deg", transformOrigin: "left center" },
+        {
+          rotate: "0deg",
+          ease: "power1.inOut",
+          scrollTrigger: {
+            trigger: mainRef.current,
+            start: "top bottom",
+            end: "top center",
+            scrub: true,
+          },
+        }
+      );
+    }, mainRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -86,10 +92,14 @@ const About = () => {
             <img
               src={WhiteLines}
               className="h-[8rem] scale-x-[-1] scale-y-[-1] animate-flicker-slow"
+              alt=""
+              aria-hidden="true"
             />
             <img
               src={BlueStripes}
               className="h-[1.2rem] scale-x-[-1] animate-flicker-slow"
+              alt=""
+              aria-hidden="true"
             />
           </div>
         </div>
@@ -98,10 +108,14 @@ const About = () => {
             <img
               src={BlueStripes}
               className="h-[1.2rem] scale-x-[-1] animate-flicker-slow"
+              alt=""
+              aria-hidden="true"
             />
             <img
               src={WhiteLines}
               className="h-[8rem] scale-x-[-1] scale-y-[-1] animate-flicker-slow"
+              alt=""
+              aria-hidden="true"
             />
           </div>
         </div>
@@ -117,6 +131,7 @@ const About = () => {
           <img
             ref={imgRef}
             src={Me}
+            alt="Jenish Thapa - Portfolio Photo"
             className="absolute inset-0 cursor-pointer"
             style={{
               clipPath: "polygon(0 0, 100% 20%, 100% 97%, 0% 100%)",
@@ -135,17 +150,17 @@ const About = () => {
           </svg>
         </div>
       </div>
-      <div className={`text-white/60 text-center ${openSans.className}`}>
+      <div className={`text-white/60 text-center ${openSans.className}`} role="text">
         End-to-End Developer | Scalable Web Apps | AWS & Docker
       </div>
-      <aside className="grow text-xl flex flex-col items-center justify-between py-8 text-center gap-8">
+      <section className="grow text-xl flex flex-col items-center justify-between py-8 text-center gap-8" aria-label="About me">
         <p className={`w-[45%] ${roboto.className}`}>
-          "I'm a 2nd-year BSc student at BITS Pilani, focused on building things
+          &quot;I&apos;m a 2nd-year BSc student at BITS Pilani, focused on building things
           that stand out. I believe in innovation over imitation and am
           currently working on creating my own brand. The goal? To make
-          something truly impactful."
+          something truly impactful.&quot;
         </p>
-      </aside>
+      </section>
     </main>
   );
 };

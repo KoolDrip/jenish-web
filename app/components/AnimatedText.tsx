@@ -5,15 +5,17 @@ import clsx from "clsx";
 
 gsap.registerPlugin(ScrollTrigger);
 
+interface AnimatedTextProps {
+  title: string;
+  lastWord: string;
+  containerClass: string;
+}
+
 const AnimatedTitle = ({
   title,
   lastWord,
   containerClass,
-}: {
-  title: string;
-  lastWord: string;
-  containerClass: string;
-}) => {
+}: AnimatedTextProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {

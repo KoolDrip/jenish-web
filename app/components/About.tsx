@@ -7,7 +7,6 @@ import AnimatedText from "./AnimatedText";
 const BlueStripes = "/ui-01-blue.svg";
 const WhiteLines = "/ui-02.svg";
 const Me = "/me.jpeg";
-const MeBG = "/me-bg.png";
 import { Roboto } from "next/font/google";
 
 const roboto = Roboto({ subsets: ["latin"], weight: ["400", "700"] });
